@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 def ask(request):
@@ -8,6 +8,7 @@ def ask(request):
     #가져온 사용자가 '로그인 했는지' 여부를 가져온다.
     is_authenticated = user.is_authenticated
     
-    print('user:',user)
-    print('is_authenticated:',is_authenticated)
+    #요청에 포함된 사용자가 로그인하지 않은 경우
+    if not request.user.is_authenticated:
+        return redirect('/posts/ask/')
     return render(request,'posts/ask.html')
