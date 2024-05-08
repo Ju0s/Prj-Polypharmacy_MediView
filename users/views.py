@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from users.forms import LoginForm
 # Create your views here.
@@ -9,11 +10,25 @@ def login_view(request):
         #LoginForm 인스턴스 생성, 입력 데이터는 request.POST 사용
         form = LoginForm(data=request.POST)
         
-        #LoginForm에 들어온 데이터가 적정한지 유효성 검사
-        print('form.is_valid()', form.is_valid())
+        #LoginForm에 전달된 데이터가 유효하면
+        if form.is_valid():
+            #username과 password값을 가져와 변수에 할당
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            
+            #username, password에 해당하는 사용자가 있는지 검사
+            user = authenticate(username=username, password=password)
+            
+            #해당 사용자가 존재한다면
+            if user:
+                #로그인 처리 후 ask 페이지로
+                login(request, user)
+                return redirect('posts/ask/')
+            #사용자가 존재하지 않을 경우 실패 로그 출력
+            else:
+                print('로그인에 실패했습니다.')
         
         #유효성 검사 이후에는 cleaned_data에서 데이터를 가져와서 사용
-        print('form.cleaned_data:', form.cleaned_data)
         context = {'form':form}
         return render(request, 'users/login.html',context)
     else:
