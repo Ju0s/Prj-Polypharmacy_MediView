@@ -2,6 +2,10 @@
 <html lang='ko'>
     <body>
         <h1>login</h1>
-        {{ form.as_p }}
+        <form method='POST'>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type='submit'>로그인</button>
+        </form>
     </body>
 </html>
