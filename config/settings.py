@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 AUTH_USER_MODEL = 'users.User'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,7 +28,7 @@ SECRET_KEY = "django-insecure-un*inwstm8os(ltme8ye%7*7_(czc01r8(6r9fm##oe+zu-r-)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [os.environ.get('DB_HOST')]
 
 
 # Application definition
@@ -80,10 +81,10 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME":"mediview",
-        "USER":"root",
-        "PASSWORD":"mulcamp",
-        "HOST":"34.170.68.126",
+        "NAME": os.environ.get('DB_DATABASE'),
+        "USER":os.environ.get('DB_USER'),
+        "PASSWORD":os.environ.get('DB_PASSWORD'),
+        "HOST":os.environ.get('DB_HOST'),
         "PORT":"3306",
     }
 }
