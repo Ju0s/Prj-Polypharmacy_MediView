@@ -47,28 +47,15 @@ def logout_view(request):
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(data=request.POST)
+        #form에 에러가 없다면 form의 save() 메서드로 사용자를 생성한다.
         if form.is_valid():
-            username = form.cleaned_data['username']
-            password1 = form.cleaned_data['password1']
-            password2 = form.cleaned_data['password2']
-            # 입력한 비밀번호 1과 2가 같은지 검사
-            if password1 != password2:
-                form.add_error('password2', '입력된 비밀번호가 서로 다릅니다.')
-                context = {'form': form}
-                return render(request, 'users/signup.html', context)
-            # username을 사용 중인 User가 있는지 검사
-            if User.objects.filter(username=username).exists():
-                form.add_error('username', '입력한 사용자명은 이미 사용중입니다.')
-                context = {'form': form}
-                return render(request, 'users/signup.html', context)
-            # 에러가 없다면 사용자를 생성하고 로그인 처리 후 ask 페이지로 이동
-            user = User.objects.create_user(
-                username=username,
-                password=password1,
-            )
+            user = form.save()
             login(request, user)
             return redirect('/posts/ask/')
+            
+            # 에러가 있다면 사용자를 생성하고 로그인 처리 후 ask 페이지로 이동
     else:
         form = SignupForm()
+        
     context = {'form': form}
     return render(request, 'users/signup.html', context)
