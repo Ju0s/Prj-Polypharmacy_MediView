@@ -26,7 +26,7 @@ def login_view(request):
                 return redirect('posts/ask/')
             #사용자가 존재하지 않을 경우 실패 로그 출력
             else:
-                print('로그인에 실패했습니다.')
+                form.add_error(None, '해당하는 사용자가 없습니다.')
         
         #유효성 검사 이후에는 cleaned_data에서 데이터를 가져와서 사용
         context = {'form':form}
