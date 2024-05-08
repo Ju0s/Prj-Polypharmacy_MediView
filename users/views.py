@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from users.forms import LoginForm
+from users.forms import LoginForm, SignupForm
 # Create your views here.
 def login_view(request):
     #이미 로그인 되어 있다면
@@ -42,3 +42,8 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('users/login/')
+
+def signup(request):
+    form = SignupForm()
+    context = {'form':form}
+    return render(request, 'users/signup.html',context)

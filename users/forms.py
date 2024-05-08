@@ -13,3 +13,8 @@ class LoginForm(forms.Form):
             attrs={'placeholder':'비밀번호 (8자리 이상)'},
         ),
         )
+    
+class SignupForm(forms.Form):
+    usename = forms.CharField()
+    password1 = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(widget=forms.PasswordInput)
