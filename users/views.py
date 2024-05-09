@@ -6,7 +6,7 @@ from users.models import User
 def login_view(request):
     #이미 로그인 되어 있다면
     if request.user.is_authenticated:
-        return redirect('/posts/ask/')
+        return redirect('/main/main/')
     if request.method == 'POST':
         #LoginForm 인스턴스 생성, 입력 데이터는 request.POST 사용
         form = LoginForm(data=request.POST)
@@ -24,7 +24,7 @@ def login_view(request):
             if user:
                 #로그인 처리 후 ask 페이지로
                 login(request, user)
-                return redirect('/posts/ask/')
+                return redirect('/main/main/')
             #사용자가 존재하지 않을 경우 실패 로그 출력
             else:
                 form.add_error(None, '해당하는 사용자가 없습니다.')
@@ -51,7 +51,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('/posts/ask/')
+            return redirect('/main/main/')
             
             # 에러가 있다면 사용자를 생성하고 로그인 처리 후 ask 페이지로 이동
     else:
