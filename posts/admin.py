@@ -14,6 +14,5 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = [
         'id',
         'post',
-        'title',
         'content',
     ]
