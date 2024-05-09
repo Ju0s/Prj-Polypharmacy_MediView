@@ -7,6 +7,7 @@ class Post(models.Model):
         verbose_name='작성자',
         on_delete=models.CASCADE,
     )
+    title = models.TextField('제목')
     content = models.TextField('내용')
     created = models.DateTimeField('생성일시',auto_now_add=True)
     
