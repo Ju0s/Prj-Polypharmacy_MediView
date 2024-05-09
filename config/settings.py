@@ -34,6 +34,7 @@ ALLOWED_HOSTS = [os.environ.get('DB_HOST'),os.environ.get('IP')]
 # Application definition
 
 INSTALLED_APPS = [
+    'main',
     'users',
     'posts',
     "django.contrib.admin",
