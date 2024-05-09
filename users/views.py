@@ -42,7 +42,7 @@ def login_view(request):
     
 def logout_view(request):
     logout(request)
-    return redirect('users/login/')
+    return redirect('/users/login/')
 
 def signup(request):
     if request.method == 'POST':
