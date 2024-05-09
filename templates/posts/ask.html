@@ -1,23 +1,30 @@
 {% extends 'base.html' %}
+
 {% block content %}
-    <nav>
-        <h1>
+    <nav class="navbar">
+        <h1 class="logo">
             <a href='/main/main/'>MediView</a>
         </h1>
-        <a href='/users/logout/'>로그아웃</a>
+        <ul class="nav-links">
+            <li>
+                <a href='/users/logout/'>로그아웃</a>
+            </li>
+        </ul>
     </nav>
-    <div id='ask' class='post-container'>
+
+    <div class='post-container'>
         {% for post in posts %}
             <article class='post'>
                 <header class='post-header'>
-                    <span>{{ post.user.username }}</span>
-                    <div class='post-title'>
-                        {{ post.title|linebreaksbr }}
-                    </div>
-                    <div class='post-buttons'>
-                        <span>Comments(0)</span>
+                    <span class="username">{{ post.user.username }}</span>
+                    <h2 class='post-title'>{{ post.title }}</h2>
+                    <div class='post-meta'>
+                        <span class='comments'>Comments(0)</span>
                     </div>
                 </header>
+                <div class='post-content'>
+                    {{ post.content|linebreaksbr }}
+                </div>
             </article>
         {% endfor %}
     </div>
