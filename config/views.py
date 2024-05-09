@@ -2,6 +2,6 @@ from django.shortcuts import render, redirect
 
 def index(request):
     if request.user.is_authenticated:
-        return redirect('posts/ask/')
+        return redirect('main/main/')
     else :
         return redirect('users/login/')
