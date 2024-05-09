@@ -24,7 +24,7 @@ def login_view(request):
             if user:
                 #로그인 처리 후 ask 페이지로
                 login(request, user)
-                return redirect('posts/ask/')
+                return redirect('/posts/ask/')
             #사용자가 존재하지 않을 경우 실패 로그 출력
             else:
                 form.add_error(None, '해당하는 사용자가 없습니다.')
