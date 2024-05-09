@@ -8,6 +8,12 @@
             <article class='post'>
                 <header class='post-header'>
                     <span>{{ post.user.username }}</span>
+                    <div class='post-title'>
+                        {{ post.title|linebreaksbr }}
+                    </div>
+                    <div class='post-buttons'>
+                        <span>Comments(0)</span>
+                    </div>
                 </header>
             </article>
         {% endfor %}
