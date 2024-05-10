@@ -63,22 +63,21 @@
         <div class="mb-4">
           <h2 class="text-2xl font-bold text-[#4f46e5]">New Blog Post</h2>
         </div>
-        <div class="space-y-4">
-          <input
-            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            placeholder="Title"
-          />
-          <textarea
-            class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 h-40"
-            placeholder="Content"
-          ></textarea>
-          <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
-            Save
-          </button>
+        <form method="post" action="{% url 'your_post_create_view' %}">
+          {% csrf_token %}
+          <div class="space-y-4">
+            {{ form.title|as_crispy_field }}
+            {{ form.content|as_crispy_field }}
+            <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
-  </div>
-  <!-- Main content and structure of the page continue here. -->
+  </main>
+
+  <!-- Other contents and script -->
 </div>
 
 <script>

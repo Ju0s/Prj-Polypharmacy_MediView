@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from posts.models import Post
+from posts.forms import PostForm
 
 # Create your views here.
 def ask(request):
@@ -18,4 +19,6 @@ def ask(request):
     return render(request,'posts/ask.html',context)
 
 def post_add(request):
-    return render(request,'posts/post_add.html')
+    form = PostForm()
+    context = {"form":form}
+    return render(request,'posts/post_add.html',context)
