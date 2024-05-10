@@ -25,7 +25,7 @@ def post_add(request):
             new_post = form.save(commit=False)  # save but do not commit to db yet
             new_post.user = request.user        # assign the user from request
             new_post.save()                     # now save it to the db
-            return redirect('some_view_name')  # redirect to a new URL
+            return redirect('posts/ask.html')  # redirect to a new URL
     else:
         form = PostForm()
     return render(request, 'posts/post_add.html', {'form': form})
