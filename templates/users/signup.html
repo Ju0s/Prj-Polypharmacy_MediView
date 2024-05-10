@@ -1,14 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div id='signup'>
-    <form method='POST'>
-        <h1>MediView</h1>
+<div id='signup' class="flex h-screen items-center justify-center">
+    <form method='POST' class="w-full max-w-md p-8 space-y-6 rounded-lg shadow-lg bg-white">
+        <h1 class="text-center text-2xl font-bold text-[#4f46e5]">MediView</h1>
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type='submit' class='btn-signup'>회원가입</button>
-        <a href="/users/login/.">로그인 페이지로 이동</a>
+        <div class="space-y-4">
+            {% for field in form %}
+            <div>
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-[#4f46e5]">{{ field.label }}</label>
+                <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" class="w-full border border-[#4f46e5] rounded-md px-3 py-2 focus:outline-none focus:ring-[#4f46e5] focus:border-[#4f46e5]" placeholder="{{ field.label }}">
+            </div>
+            {% endfor %}
+        </div>
+        <button type='submit' class='w-full inline-flex items-center justify-center h-10 rounded-md bg-[#4f46e5] px-4 py-2 font-medium text-white transition-colors hover:bg-[#4338ca] focus:outline-none focus:ring-1 focus:ring-[#4f46e5]/50'>회원가입</button>
+        <div class="text-center text-sm text-[#6b7280]">
+            이미 계정이 있으신가요?
+            <a href="/users/login/" class="font-medium text-[#4f46e5] hover:underline">로그인 페이지로 이동</a>
+        </div>
     </form>
 </div>
 {% endblock %}
-
