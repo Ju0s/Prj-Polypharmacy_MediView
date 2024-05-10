@@ -16,3 +16,6 @@ def ask(request):
     posts = Post.objects.all()
     context = {'posts':posts}
     return render(request,'posts/ask.html',context)
+
+def post_add(request):
+    return render(request,'posts/post_add.html')
