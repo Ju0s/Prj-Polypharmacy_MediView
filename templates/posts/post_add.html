@@ -63,7 +63,7 @@
         <div class="mb-4">
           <h2 class="text-2xl font-bold text-[#4f46e5]">New Blog Post</h2>
         </div>
-        <form method="post" action="{% url 'your_post_create_view' %}">
+        <form method="post" action="{% url '/posts/post_add' %}">
           {% csrf_token %}
           <div class="space-y-4">
             {{ form.title}}
