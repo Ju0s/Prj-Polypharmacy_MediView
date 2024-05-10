@@ -68,15 +68,14 @@
               {{ post.user.username }} - 
               <time datetime="{{ post.created|date:'c' }}">{{ post.created|date:"Y년 m월 d일 H:i" }}</time>
             </p>
-            <!-- 여기에 답변 상태를 표시합니다 -->
-            <p class="text-sm font-semibold">
+          </header>
+          <p class="text-sm font-semibold">
               {% if post.get_comments_count == 0 %}
                 <span class="text-red-500">답변 대기 중</span>
               {% else %}
                 <span class="text-green-500">답변 완료</span>
               {% endif %}
             </p>
-          </header>
         </article>
         {% endfor %}
     </div>
