@@ -59,20 +59,22 @@
   </header>
   <div class="mt-4 px-6">
     <div class="space-y-4">
-      {% for post in posts %}
+        <div class="flex h-screen w-full items-center justify-center bg-[#f0f4ff] dark:bg-[#0f172a]"></div>
+        {% for post in posts %}
         <article class="bg-white p-4 rounded-lg shadow">
           <header class="border-b pb-2 mb-2">
             <span class="font-semibold text-lg text-gray-900">{{ post.user.username }}</span>
-            <span class="font-semibold text-lg text-gray-900">{{ post.user.title }}</span>
-            <span class="font-semibold text-lg text-gray-900">{{ post.user.created }}</span>
+            <h2 class="text-xl text-gray-800">{{ post.title }}</h2>
+            <time class="text-sm text-gray-500">{{ post.created|date:"Y-m-d H:i" }}</time>
           </header>
+          <p class="text-gray-700">{{ post.content|truncatewords:30 }}</p>
         </article>
       {% endfor %}
     </div>
   </div>
+</div>
   </div>
   <!-- Main content and structure of the page continue here. -->
-  <div class="flex h-screen w-full items-center justify-center bg-[#f0f4ff] dark:bg-[#0f172a]"></div>
 </div>
 
 <script>
