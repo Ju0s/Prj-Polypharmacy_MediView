@@ -12,7 +12,7 @@ class Post(models.Model):
     created = models.DateTimeField('생성일시',auto_now_add=True)
     
     def get_comments_count(self):
-        return self.commet_set.count()
+        return self.comment_set.count()
     
 class Comment(models.Model):
     user = models.ForeignKey(
