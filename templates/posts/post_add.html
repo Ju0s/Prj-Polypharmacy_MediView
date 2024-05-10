@@ -1,28 +1,79 @@
-{% extends 'base.html' %}
-{% load crispy_forms_tags %}
-{% block content %}
+<script src='https://cdn.tailwindcss.com'></script>
 <div class="flex h-screen w-full flex-col">
   <header class="flex h-16 w-full items-center justify-between bg-[#4f46e5] px-6 dark:bg-[#1e293b]">
     <div class="flex items-center space-x-4">
-      <h1 class="text-xl font-bold text-white">
-        <a href='/main/main/'>MediView</a>
-      </h1>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="h-8 w-8 text-white"
+      >
+        <path d="M5 12s2.545-5 7-5c4.454 0 7 5 7 5s-2.546 5-7 5c-4.455 0-7-5-7-5z"></path>
+        <path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path>
+        <path d="M21 17v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2"></path>
+        <path d="M21 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2"></path>
+      </svg>
+      <h1>
+        <a class="text-xl font-bold text-white" href='/main/main/'>MediView</a>
+    </h1>
     </div>
     <nav class="flex items-center space-x-6">
-      <a class="text-sm font-medium text-white hover:underline" href="/posts/ask/">문의사항</a>
+      <a class="text-sm font-medium text-white hover:underline" href="#">
+        기능1
+      </a>
+      <a class="text-sm font-medium text-white hover:underline" href="#">
+        기능2
+      </a>
+      <a class="text-sm font-medium text-white hover:underline" href="#">
+        기능3
+      </a>
+      <a class="text-sm font-medium text-white hover:underline" href="/posts/ask/">
+        문의사항
+      </a>
     </nav>
-  </header>
-  <main class="flex-1 bg-[#f0f4ff] dark:bg-[#0f172a] px-6">
-    <div class="max-w-4xl mx-auto py-6">
-      <h1 class="text-2xl font-bold text-gray-900 mb-6">문의사항 작성</h1>
-      <form method="POST" action="{% url 'post_add' %}" class="bg-white shadow-lg rounded-lg p-6">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
-          게시
+    <div class="flex items-center space-x-4">
+      <div class="relative">
+        <button
+          id="userMenuButton"
+          class="flex items-center space-x-2 bg-[#4f46e5] text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4f46e5]"
+          aria-haspopup="true"
+          onclick="toggleDropdown()"
+        >
+          <span>{{user.username}}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="ml-2 h-4 w-4" viewBox="0 0 24 24">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
         </button>
-    </form>
+        <div id="userMenuDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 hidden">
+          <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+          <a href="/users/logout/" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+        </div>
+      </div>
     </div>
-  </main>
+  </header>
+
+  <!-- Main content and structure of the page continue here. -->
+  <div class="flex h-screen w-full items-center justify-center bg-[#f0f4ff] dark:bg-[#0f172a]"></div>
+  <form method="POST" action="{% url 'post_add' %}" class="bg-white shadow-lg rounded-lg p-6">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+      게시
+    </button>
+</form>
+
 </div>
-{% endblock %}
+
+<script>
+  function toggleDropdown() {
+    var dropdown = document.getElementById('userMenuDropdown');
+    var isVisible = dropdown.style.display === 'block';
+    dropdown.style.display = isVisible ? 'none' : 'block';
+  }
+</script>
