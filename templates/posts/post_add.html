@@ -6,7 +6,7 @@
     </nav>
     <div id='post-add'>
         <h1>문의사항 작성</h1>
-        <form method="POST">
+        <form method="POST" action="{% url 'post_add' %}">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">게시</button>
