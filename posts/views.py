@@ -16,7 +16,7 @@ def ask(request):
     
     posts = Post.objects.all()
     context = {'posts':posts}
-    return render(request,'posts/ask.html',context)
+    return render(request,'/posts/ask.html',context)
 
 def post_add(request):
     if request.method == 'POST':
@@ -25,7 +25,7 @@ def post_add(request):
             new_post = form.save(commit=False)  # save but do not commit to db yet
             new_post.user = request.user        # assign the user from request
             new_post.save()                     # now save it to the db
-            return redirect('posts/ask.html')  # redirect to a new URL
+            return redirect('/posts/ask.html')  # redirect to a new URL
     else:
         form = PostForm()
-    return render(request, 'posts/post_add.html', {'form': form})
+    return render(request, '/posts/post_add.html', {'form': form})
