@@ -3,34 +3,59 @@
 <div class="flex h-screen w-full items-center justify-center bg-[#f0f4ff] dark:bg-[#0f172a]">
   <div class="mx-4 w-full max-w-md space-y-6 rounded-lg bg-white p-8 shadow-lg dark:bg-[#1e293b]">
     <div class="flex flex-col items-center space-y-2">
+      <!-- Icon and title unchanged -->
       <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="h-12 w-12 text-[#4f46e5]"
-      >
-        <path d="M5 12s2.545-5 7-5c4.454 0 7 5 7 5s-2.546 5-7 5c-4.455 0-7-5-7-5z"></path>
-        <path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path>
-        <path d="M21 17v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2"></path>
-        <path d="M21 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2"></path>
-      </svg>
-      <h2 class="text-2xl font-bold text-[#4f46e5]">MediView</h2>
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="h-12 w-12 text-[#4f46e5]"
+    >
+      <path d="M5 12s2.545-5 7-5c4.454 0 7 5 7 5s-2.546 5-7 5c-4.455 0-7-5-7-5z"></path>
+      <path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path>
+      <path d="M21 17v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2"></path>
+      <path d="M21 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2"></path>
+    </svg>
+    <h2 class="text-2xl font-bold text-[#4f46e5]">MediView</h2>
     </div>
     <form class="space-y-4 w-full" method="post">
       {% csrf_token %}
+      <!-- Display non-field specific errors -->
+      {% if form.non_field_errors %}
+        <div class="text-red-500 text-sm">
+          {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
       <div class="space-y-4 w-full">
         <label for="username" class="block text-sm font-medium text-[#4f46e5]">사용자명</label>
         <input id="username" name="username" type="text" class="w-full border border-[#4f46e5] rounded-md px-3 py-2 focus:outline-none focus:ring-[#4f46e5] focus:border-[#4f46e5] dark:bg-[#334155] dark:text-[#f8fafc] dark:border-[#475569]" placeholder="Username">
+        <!-- Display field specific errors for 'username' -->
+        {% if form.username.errors %}
+          <div class="text-red-500 text-sm">
+            {% for error in form.username.errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
       </div>
       <div class="space-y-4 w-full">
         <label for="password" class="block text-sm font-medium text-[#4f46e5]">비밀번호</label>
         <input id="password" name="password" type="password" class="w-full border border-[#4f46e5] rounded-md px-3 py-2 focus:outline-none focus:ring-[#4f46e5] focus:border-[#4f46e5] dark:bg-[#334155] dark:text-[#f8fafc] dark:border-[#475569]" placeholder="Password">
+        <!-- Display field specific errors for 'password' -->
+        {% if form.password.errors %}
+          <div class="text-red-500 text-sm">
+            {% for error in form.password.errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
       </div>
       <button class="w-full inline-flex items-center justify-center h-10 rounded-md bg-[#4f46e5] px-4 py-2 font-medium text-white transition-colors hover:bg-[#4338ca] focus:outline-none focus:ring-1 focus:ring-[#4f46e5]/50 dark:bg-[#4f46e5] dark:hover:bg-[#4338ca] dark:focus:ring-[#4f46e5]/50">
         로그인
@@ -43,4 +68,5 @@
       </div>
     </form>
   </div>
+</div>
 </div>

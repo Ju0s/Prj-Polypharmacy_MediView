@@ -6,3 +6,5 @@ plotly
 django
 mysqlclient
 pillow
+django-crispy-forms
+python-dotenv
