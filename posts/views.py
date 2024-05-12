@@ -18,9 +18,9 @@ def ask(request):
         elif search_type == 'author':
             all_posts = Post.objects.filter(user__username__icontains=query)
         else:
-            all_posts = Post.objects.all()
+            all_posts = Post.objects.all().order_by('-created')
     else:
-        all_posts = Post.objects.all()
+        all_posts = Post.objects.all().order_by('-created')
 
     paginator = Paginator(all_posts, 6)  # Show 6 posts per page
     page_number = request.GET.get('page')
