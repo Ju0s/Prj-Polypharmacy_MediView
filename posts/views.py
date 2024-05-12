@@ -3,23 +3,30 @@ from posts.models import Post, Comment
 from posts.forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 # Create your views here.
 @login_required
 def ask(request):
-    #요청으로부터 사용자 정보를 가져온다.
-    user = request.user
-    
-    #가져온 사용자가 '로그인 했는지' 여부를 가져온다.
-    is_authenticated = user.is_authenticated
-    
-    #요청에 포함된 사용자가 로그인하지 않은 경우
-    if not request.user.is_authenticated:
-        return redirect('/users/login/')
-    
-    posts = Post.objects.all()
-    context = {'posts':posts}
-    return render(request,'posts/ask.html',context)
+    query = request.GET.get('q', '')  # Retrieve the search query if present
+    search_type = request.GET.get('type', 'title')  # Retrieve the type of search
+
+    if query:
+        if search_type == 'title':
+            all_posts = Post.objects.filter(title__icontains=query)
+        elif search_type == 'author':
+            all_posts = Post.objects.filter(user__username__icontains=query)
+        else:
+            all_posts = Post.objects.all()
+    else:
+        all_posts = Post.objects.all()
+
+    paginator = Paginator(all_posts, 6)  # Show 6 posts per page
+    page_number = request.GET.get('page')
+    posts = paginator.get_page(page_number)
+
+    return render(request, 'posts/ask.html', {'posts': posts, 'query': query, 'search_type': search_type})
 
 @login_required
 def post_add(request):
@@ -40,7 +47,8 @@ def post_detail(request, post_id):
     if request.user != post.user and not request.user.is_staff:
         return HttpResponseForbidden("You are not allowed to view this page.")
     
-    comments = post.comment_set.all().order_by('-created')
+    # 댓글을 오름차순으로 정렬
+    comments = post.comment_set.all().order_by('created')
     form = CommentForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         new_comment = form.save(commit=False)

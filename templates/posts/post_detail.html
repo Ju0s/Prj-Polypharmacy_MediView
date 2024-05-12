@@ -1,110 +1,52 @@
-<script src='https://cdn.tailwindcss.com'></script>
-<div class="flex h-screen w-full flex-col">
-  <header class="flex h-16 w-full items-center justify-between bg-[#4f46e5] px-6 dark:bg-[#1e293b]">
-    <div class="flex items-center space-x-4">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="h-8 w-8 text-white"
-      >
-        <path d="M5 12s2.545-5 7-5c4.454 0 7 5 7 5s-2.546 5-7 5c-4.455 0-7-5-7-5z"></path>
-        <path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path>
-        <path d="M21 17v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2"></path>
-        <path d="M21 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2"></path>
-      </svg>
-      <h1>
-        <a class="text-xl font-bold text-white" href='/main/main/'>MediView</a>
-    </h1>
-    </div>
-    <nav class="flex items-center space-x-6">
-      <a class="text-sm font-medium text-white hover:underline" href="#">
-        기능1
-      </a>
-      <a class="text-sm font-medium text-white hover:underline" href="#">
-        기능2
-      </a>
-      <a class="text-sm font-medium text-white hover:underline" href="#">
-        기능3
-      </a>
-      <a class="text-sm font-medium text-white hover:underline" href="/posts/ask/">
-        문의사항
-      </a>
-    </nav>
-    <div class="flex items-center space-x-4">
-      <div class="relative">
-        <button
-          id="userMenuButton"
-          class="flex items-center space-x-2 bg-[#4f46e5] text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4f46e5]"
-          aria-haspopup="true"
-          onclick="toggleDropdown()"
-        >
-          <span>{{user.username}}</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="ml-2 h-4 w-4" viewBox="0 0 24 24">
-            <path d="M6 9l6 6 6-6" />
-          </svg>
-        </button>
-        <div id="userMenuDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 hidden">
-          <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-          <a href="/users/logout/" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
-        </div>
-      </div>
-    </div>
-  </header>
+{% extends 'mainbase.html' %}
+{% load static %}
 
-  <!-- Main content and structure of the page continue here. -->
-  <div class="flex h-screen w-full items-center justify-center bg-[#f0f4ff] dark:bg-[#0f172a]">
-    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300">
-      <header class="border-b border-gray-300 pb-4 mb-6">
-          <h1 class="text-3xl font-bold text-gray-900">{{ post.title }}</h1>
-          <p class="text-sm text-gray-500">
-              By: <span class="text-gray-700 font-medium">{{ post.user.username }}</span> -
-              <time datetime="{{ post.created|date:'c' }}">{{ post.created|date:"Y년 m월 d일 H:i" }}</time>
-          </p>
-      </header>
-      <section>
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">Contents</h2>
-          <p class="text-gray-700 whitespace-pre-line">{{ post.content }}</p>
-      </section>
-      <section class="mt-8">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">Comments</h2>
-          <div class="space-y-4">
-              {% for comment in comments %}
-              <div class="bg-gray-100 p-4 rounded-lg">
-                  <p class="text-gray-800">{{ comment.content }}</p>
-                  <p class="text-sm text-gray-600">By {{ comment.user.username }} on {{ comment.created|date:"Y년 m월 d일 H:i" }}</p>
-              </div>
-              {% empty %}
-              <p class="text-gray-600">No comments yet.</p>
-              {% endfor %}
-          </div>
-      </section>
-      <section class="mt-8">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">Add a Comment</h2>
-          <form method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-              {% csrf_token %}
-              <div class="mb-4">
-                  {{ form.content.label_tag }}
-                  {{ form.content }}
-                  {{ form.content.errors }}
-              </div>
-              <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit Comment</button>
-          </form>
-      </section>
-  </div>
-    
-</div>
-</div>
-<script>
-  function toggleDropdown() {
-    var dropdown = document.getElementById('userMenuDropdown');
-    var isVisible = dropdown.style.display === 'block';
-    dropdown.style.display = isVisible ? 'none' : 'block';
+{% block content %}
+<style>
+  .full-width-container {
+    width: 100%; 
+    max-width: none; 
   }
-</script>
+</style>
+
+<div class="flex h-screen w-full items-center justify-center bg-[#f0f4ff] dark:bg-[#0f172a]">
+    <div class="full-width-container mx-auto bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300">
+      <!-- 내용 -->
+      <header class="border-b border-gray-300 pb-4 mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">{{ post.title }}</h1>
+        <p class="text-sm text-gray-500">
+            작성자: <span class="text-gray-700 font-medium">{{ post.user.username }}</span> -
+            <time datetime="{{ post.created|date:'c' }}">{{ post.created|date:"Y년 m월 d일 H:i" }}</time>
+        </p>
+    </header>
+    <section>
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">내용</h2>
+        <p class="text-gray-700 whitespace-pre-line">{{ post.content }}</p>
+    </section>
+    <section class="mt-8">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">댓글</h2>
+        <div class="space-y-4">
+            {% for comment in comments %}
+            <div class="bg-gray-100 p-4 rounded-lg">
+                <p class="text-gray-800">{{ comment.content }}</p>
+                <p class="text-sm text-gray-600">작성자: {{ comment.user.username }} - {{ comment.created|date:"Y년 m월 d일 H:i" }}</p>
+            </div>
+            {% empty %}
+            <p class="text-gray-600">아직 댓글이 존재하지 않습니다.</p>
+            {% endfor %}
+        </div>
+    </section>
+    <section class="mt-8">
+        <form method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="content" class="block text-lg font-medium text-gray-900">댓글 작성</label>
+                <textarea id="content" name="content" rows="4" class="mt-1 block w-full px-3 py-2 border border-blue-300 bg-blue-50 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required placeholder="여기에 글을 작성하세요..."></textarea>
+            </div>
+            <button type="submit" class="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline">댓글 제출</button>
+        </form>
+    </section>
+</div>   
+    </div>
+</div>
+{% endblock %}
