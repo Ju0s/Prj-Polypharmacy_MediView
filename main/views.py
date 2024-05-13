@@ -10,5 +10,5 @@ def main(request):
     
     #요청에 포함된 사용자가 로그인하지 않은 경우
     if not request.user.is_authenticated:
-        return redirect('/users/login/')
+        return render(request,'main/main_not_user.html')
     return render(request,'main/main.html')

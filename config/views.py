@@ -4,4 +4,4 @@ def index(request):
     if request.user.is_authenticated:
         return redirect('main/main/')
     else :
-        return redirect('users/login/')
+        return redirect('main/main/')

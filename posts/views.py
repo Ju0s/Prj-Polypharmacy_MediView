@@ -6,6 +6,7 @@ from django.http import HttpResponseForbidden
 from django.core.paginator import Paginator
 from django.db.models import Q
 
+
 # Create your views here.
 @login_required
 def ask(request):
