@@ -3,19 +3,27 @@
 <div id='signup' class="flex h-screen items-center justify-center">
     <div class="flex h-screen w-full items-center justify-center bg-[#f0f4ff] dark:bg-[#0f172a]">
     <form method='POST' class="w-full max-w-md p-8 space-y-6 rounded-lg shadow-lg bg-white">
-        <h1 class="text-center text-2xl font-bold text-[#4f46e5]">약끼리</h1>
+        <h1 class="text-center text-2xl font-bold text-[#4f46e5]">회원가입</h1>
         {% csrf_token %}
         <div class="space-y-4">
             {% for field in form %}
             <div>
-                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-[#4f46e5]">{{ field.label }}</label>
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-[#4f46e5]">
+                    {% if field.name == 'username' %}
+                        사용자 이름
+                    {% elif field.name == 'password1' %}
+                        비밀번호(8자리 이상)
+                    {% else %}
+                        비밀번호 확인
+                    {% endif %}
+                </label>
                 <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" class="w-full border border-[#4f46e5] rounded-md px-3 py-2 focus:outline-none focus:ring-[#4f46e5] focus:border-[#4f46e5]" placeholder="{{ field.label }}">
                 {% if field.errors %}
-                    <div class="text-red-500 text-sm">
-                        {% for error in field.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
+                <div class="text-red-500 text-sm">
+                    {% for error in field.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
                 {% endif %}
             </div>
             {% endfor %}
