@@ -21,7 +21,7 @@
     </svg>
     <h2 class="text-2xl font-bold text-[#4f46e5]">약끼리</h2>
     </div>
-    <form class="space-y-4 w-full" method="post">
+    <form class="space-y-4 w-full" method="post" autocomplete='off'>
       {% csrf_token %}
       <!-- Display non-field specific errors -->
       {% if form.non_field_errors %}

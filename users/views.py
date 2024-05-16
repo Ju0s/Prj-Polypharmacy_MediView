@@ -2,6 +2,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from users.forms import LoginForm, SignupForm
 from users.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+
 # Create your views here.
 def login_view(request):
     #이미 로그인 되어 있다면
@@ -60,3 +65,20 @@ def signup(request):
         form = SignupForm()
 
     return render(request, 'users/signup.html', {'form': form})
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        password_form = PasswordChangeForm(request.user, request.POST)
+        if password_form.is_valid():
+            user = password_form.save()
+            update_session_auth_hash(request, user)  # 비밀번호 변경 후 세션 유지
+            messages.success(request, '비밀번호가 성공적으로 변경되었습니다.')
+            return redirect('profile')
+    else:
+        password_form = PasswordChangeForm(request.user)
+    
+    return render(request, 'users/profile.html', {
+        'user': request.user,
+        'password_form': password_form
+    })
