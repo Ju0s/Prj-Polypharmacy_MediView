@@ -46,16 +46,17 @@ def logout_view(request):
 
 def signup(request):
     if request.method == 'POST':
-        form = SignupForm(data=request.POST)
-        #form에 에러가 없다면 form의 save() 메서드로 사용자를 생성한다.
+        form = SignupForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('/main/main/')
-            
-            # 에러가 있다면 사용자를 생성하고 로그인 처리 후 ask 페이지로 이동
+            user = form.save()  # 사용자 객체를 데이터베이스에 저장
+            # 폼에서 제공받은 비밀번호로 사용자를 인증
+            username = user.username
+            password = form.cleaned_data.get('password1')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)  # 사용자 로그인 처리
+                return redirect('/main/main/')  # 로그인 후 리디렉션
     else:
         form = SignupForm()
-        
-    context = {'form': form}
-    return render(request, 'users/signup.html', context)
+
+    return render(request, 'users/signup.html', {'form': form})
