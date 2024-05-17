@@ -46,7 +46,7 @@ def post_add(request):
 def post_detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     if request.user != post.user and not request.user.is_staff:
-        return HttpResponseForbidden("You are not allowed to view this page.")
+        return render(request,'posts/post_detail_no_auth.html')
     
     # 댓글을 오름차순으로 정렬
     comments = post.comment_set.all().order_by('created')
