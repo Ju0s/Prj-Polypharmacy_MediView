@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'main',
     'users',
     'posts',
+    'medicine',
     'crispy_forms',
     "django.contrib.admin",
     "django.contrib.auth",
