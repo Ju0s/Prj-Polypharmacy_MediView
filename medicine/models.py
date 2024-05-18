@@ -6,9 +6,11 @@ class 업체(models.Model):
     업체명 = models.TextField()
 
 class 성분(models.Model):
-    주성분코드 = models.CharField(primary_key=True,max_length=255)
-    성분명 = models.TextField()
+    주성분코드 = models.CharField(max_length=255)
+    성분명 = models.CharField(max_length=255)
     제형 = models.TextField(null=True)
+    class Meta:
+        unique_together = (('주성분코드', '성분명'),)
 
 class 품목_사용정보(models.Model):
     품목기준코드 = models.IntegerField(primary_key=True)
@@ -52,9 +54,11 @@ class 노인주의상세정보(models.Model):
     노인주의_약품상세정보 = models.TextField()
 
 class 병용금기상세정보(models.Model):
-    제품코드 = models.ForeignKey(제품, on_delete=models.CASCADE,primary_key=True)
+    제품코드 = models.ForeignKey(제품, on_delete=models.CASCADE)
     상대제품코드 = models.IntegerField()
     상세정보 = models.TextField()
+    class Meta:
+        unique_together = (('제품코드', '상대제품코드'),)
 
 class 연령별금기상세정보(models.Model):
     제품코드 = models.ForeignKey(제품, on_delete=models.CASCADE,primary_key=True)
