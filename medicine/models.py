@@ -69,8 +69,8 @@ class 연령별금기상세정보(models.Model):
 
 class 용량주의상세정보(models.Model):
     제품코드 = models.ForeignKey(제품, on_delete=models.CASCADE,primary_key=True)
-    일최대투여량 = models.TextField()
-    일최대투여기준량 = models.FloatField()
+    일일최대투여량 = models.TextField()
+    일일최대투여기준량 = models.FloatField()
     용량주의_상세내용 = models.TextField(null=True)
 
 class 임부금기상세정보(models.Model):
@@ -81,7 +81,7 @@ class 임부금기상세정보(models.Model):
 class 투여기간상세정보(models.Model):
     제품코드 = models.ForeignKey(제품, on_delete=models.CASCADE,primary_key=True)
     최대투여기간일수 = models.IntegerField()
-    주성분명함량 = models.TextField()
+    주성분함량 = models.TextField()
 
 class 효능군중복상세정보(models.Model):
     제품코드 = models.ForeignKey(제품, on_delete=models.CASCADE,primary_key=True)
