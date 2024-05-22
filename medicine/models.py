@@ -27,7 +27,7 @@ class 제품(models.Model):
     품목기준코드 = models.IntegerField(null=True)
     제품명 = models.TextField()
     업체코드 = models.ForeignKey(업체, on_delete=models.CASCADE,null=True)
-    주성분코드 = models.TextField()
+    주성분코드 = models.CharField(max_length=255)
     
 
 class 제품_상세정보(models.Model):
