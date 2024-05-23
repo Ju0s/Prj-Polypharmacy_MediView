@@ -54,16 +54,9 @@
 
     <h2 class="text-xl font-semibold mt-8 mb-4">금기 정보</h2>
     <div class="mb-4 space-y-2">
-        <div class="flex space-x-2">
-            {% for 금기유형 in 금기유형_list|slice:":5" %}
-                <button id="filter-{{ 금기유형 }}" class="bg-[#4f46e5] text-white px-4 py-2 rounded-full hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-gray-500" onclick="filterContraindications('{{ 금기유형 }}')">{{ 금기유형 }} (<span id="count-{{ 금기유형 }}">0</span>)</button>
-            {% endfor %}
-        </div>
-        <div class="flex space-x-2 mt-2">
-            {% for 금기유형 in 금기유형_list|slice:"5:" %}
-                <button id="filter-{{ 금기유형 }}" class="bg-[#4f46e5] text-white px-4 py-2 rounded-full hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-gray-500" onclick="filterContraindications('{{ 금기유형 }}')">{{ 금기유형 }} (<span id="count-{{ 금기유형 }}">0</span>)</button>
-            {% endfor %}
-        </div>
+        {% for 금기유형 in 금기유형_list %}
+            <button id="filter-{{ 금기유형 }}" class="bg-[#4f46e5] text-white px-4 py-2 rounded-full hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500" onclick="filterContraindications('{{ 금기유형 }}')">{{ 금기유형 }} (<span id="count-{{ 금기유형 }}">0</span>)</button>
+        {% endfor %}
     </div>
     <table id="contraindicationsTable" class="min-w-full bg-white rounded-lg shadow-md hidden">
         <thead>
@@ -71,7 +64,6 @@
                 <th class="px-4 py-2 border-b-2">제품명</th>
                 <th class="px-4 py-2 border-b-2">금기코드</th>
                 <th class="px-4 py-2 border-b-2">금기유형</th>
-                <th class="px-4 py-2 border-b-2">상대제품명</th>
                 <th class="px-4 py-2 border-b-2">상세정보</th>
             </tr>
         </thead>
@@ -186,20 +178,17 @@
                         const nameCell = newRow.insertCell(0);
                         const contraindicationCodeCell = newRow.insertCell(1);
                         const contraindicationTypeCell = newRow.insertCell(2);
-                        const relativeProductNameCell = newRow.insertCell(3);
-                        const detailInfoCell = newRow.insertCell(4);
+                        const detailInfoCell = newRow.insertCell(3);
 
                         nameCell.textContent = item.제품명;
                         contraindicationCodeCell.textContent = item.금기코드;
                         contraindicationTypeCell.textContent = item.금기유형;
-                        relativeProductNameCell.textContent = item.상대제품명 || '';
                         detailInfoCell.innerHTML = formatDetailInfo(item.상세정보);
 
                         nameCell.classList.add('px-4', 'py-2', 'border-b');
-                        nameCell.dataset.code = code; 
+                        nameCell.dataset.code = code;
                         contraindicationCodeCell.classList.add('px-4', 'py-2', 'border-b');
                         contraindicationTypeCell.classList.add('px-4', 'py-2', 'border-b');
-                        relativeProductNameCell.classList.add('px-4', 'py-2', 'border-b');
                         detailInfoCell.classList.add('px-4', 'py-2', 'border-b');
                     });
                     updateContraindicationsCount();
@@ -238,7 +227,7 @@
     function filterContraindications(type) {
         const rows = document.querySelectorAll('#contraindicationsTable tbody tr');
         rows.forEach(row => {
-            if (type === '전체' || row.cells[2].textContent === type) {
+            if (row.cells[2].textContent === type) {
                 row.style.display = '';
             } else {
                 row.style.display = 'none';
