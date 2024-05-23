@@ -53,12 +53,25 @@
     </table>
 
     <h2 class="text-xl font-semibold mt-8 mb-4">금기 정보</h2>
+    <div class="mb-4 space-y-2">
+        <div class="flex space-x-2">
+            {% for 금기유형 in 금기유형_list|slice:":5" %}
+                <button id="filter-{{ 금기유형 }}" class="bg-[#4f46e5] text-white px-4 py-2 rounded-full hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-gray-500" onclick="filterContraindications('{{ 금기유형 }}')">{{ 금기유형 }} (<span id="count-{{ 금기유형 }}">0</span>)</button>
+            {% endfor %}
+        </div>
+        <div class="flex space-x-2 mt-2">
+            {% for 금기유형 in 금기유형_list|slice:"5:" %}
+                <button id="filter-{{ 금기유형 }}" class="bg-[#4f46e5] text-white px-4 py-2 rounded-full hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-gray-500" onclick="filterContraindications('{{ 금기유형 }}')">{{ 금기유형 }} (<span id="count-{{ 금기유형 }}">0</span>)</button>
+            {% endfor %}
+        </div>
+    </div>
     <table id="contraindicationsTable" class="min-w-full bg-white rounded-lg shadow-md hidden">
         <thead>
             <tr>
                 <th class="px-4 py-2 border-b-2">제품명</th>
                 <th class="px-4 py-2 border-b-2">금기코드</th>
                 <th class="px-4 py-2 border-b-2">금기유형</th>
+                <th class="px-4 py-2 border-b-2">상대제품명</th>
                 <th class="px-4 py-2 border-b-2">상세정보</th>
             </tr>
         </thead>
@@ -74,7 +87,6 @@
 
     function addProduct(name, code, ingredientCode, company) {
         const selectedProducts = getSelectedProducts();
-        // Check if the product is already in the selected products
         const existingProduct = selectedProducts.find(product => product.code === code);
         if (!existingProduct) {
             selectedProducts.push({ name, code, ingredientCode, company });
@@ -104,10 +116,10 @@
                 table.deleteRow(i);
             }
         }
-        // Hide the table if no contraindications left
         if (table.getElementsByTagName('tr').length === 0) {
             document.getElementById('contraindicationsTable').classList.add('hidden');
         }
+        updateContraindicationsCount();
     }
 
     function getSelectedProducts() {
@@ -120,7 +132,7 @@
 
     function renderSelectedProducts() {
         const table = document.getElementById('selectedProductsTable').getElementsByTagName('tbody')[0];
-        table.innerHTML = ''; // Clear the table
+        table.innerHTML = '';
         const selectedProducts = getSelectedProducts();
         selectedProducts.forEach((product, index) => {
             const newRow = table.insertRow();
@@ -161,38 +173,36 @@
 
     function fetchContraindications(code, name) {
         const selectedProducts = getSelectedProducts().map(product => product.code);
-        fetch(`/medicine/get_contraindications/${code}/`)
+        const url = `/medicine/get_contraindications/${code}/?selected_products=${JSON.stringify(selectedProducts)}`;
+        
+        fetch(url)
             .then(response => response.json())
             .then(data => {
                 const table = document.getElementById('contraindicationsTable').getElementsByTagName('tbody')[0];
                 if (data.length > 0) {
                     document.getElementById('contraindicationsTable').classList.remove('hidden');
                     data.forEach(item => {
-                        // Filter 병용 주의 데이터
-                        if (item.금기코드 === 5 && item.상대제품코드) {
-                            item.상대제품코드 = item.상대제품코드.filter(code => selectedProducts.includes(code));
-                            if (item.상대제품코드.length === 0) {
-                                return;
-                            }
-                        }
-
                         const newRow = table.insertRow();
                         const nameCell = newRow.insertCell(0);
                         const contraindicationCodeCell = newRow.insertCell(1);
                         const contraindicationTypeCell = newRow.insertCell(2);
-                        const detailInfoCell = newRow.insertCell(3);
+                        const relativeProductNameCell = newRow.insertCell(3);
+                        const detailInfoCell = newRow.insertCell(4);
 
-                        nameCell.textContent = name;
+                        nameCell.textContent = item.제품명;
                         contraindicationCodeCell.textContent = item.금기코드;
                         contraindicationTypeCell.textContent = item.금기유형;
+                        relativeProductNameCell.textContent = item.상대제품명 || '';
                         detailInfoCell.innerHTML = formatDetailInfo(item.상세정보);
 
                         nameCell.classList.add('px-4', 'py-2', 'border-b');
-                        nameCell.dataset.code = code; // Store 제품코드 in a data attribute for removal
+                        nameCell.dataset.code = code; 
                         contraindicationCodeCell.classList.add('px-4', 'py-2', 'border-b');
                         contraindicationTypeCell.classList.add('px-4', 'py-2', 'border-b');
+                        relativeProductNameCell.classList.add('px-4', 'py-2', 'border-b');
                         detailInfoCell.classList.add('px-4', 'py-2', 'border-b');
                     });
+                    updateContraindicationsCount();
                 }
             });
     }
@@ -204,6 +214,36 @@
             }).join('<br><br>');
         }
         return '상세정보 없음';
+    }
+
+    function updateContraindicationsCount() {
+        const rows = document.querySelectorAll('#contraindicationsTable tbody tr');
+        const counts = {};
+
+        rows.forEach(row => {
+            const type = row.cells[2].textContent;
+            if (!counts[type]) {
+                counts[type] = 0;
+            }
+            counts[type]++;
+        });
+
+        document.querySelectorAll('[id^="filter-"]').forEach(button => {
+            const type = button.id.replace('filter-', '');
+            const countSpan = document.getElementById(`count-${type}`);
+            countSpan.textContent = counts[type] || 0;
+        });
+    }
+
+    function filterContraindications(type) {
+        const rows = document.querySelectorAll('#contraindicationsTable tbody tr');
+        rows.forEach(row => {
+            if (type === '전체' || row.cells[2].textContent === type) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
     }
 </script>
 {% endblock %}
