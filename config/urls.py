@@ -26,6 +26,8 @@ urlpatterns = [
     path('posts/', include('posts.urls')),
     path('main/',include('main.urls')),
     path('medicine/',include('medicine.urls')),
+    path('search/', include('search.urls')),
+    path('faq/', include('faq.urls')),
     path('',index),
 ]
 urlpatterns += static(

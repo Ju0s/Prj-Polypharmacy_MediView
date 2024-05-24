@@ -14,6 +14,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 
+
 load_dotenv()
 
 AUTH_USER_MODEL = 'users.User'
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'users',
     'posts',
     'medicine',
+    'faq',
     'crispy_forms',
     "django.contrib.admin",
     "django.contrib.auth",
