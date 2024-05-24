@@ -85,16 +85,36 @@
 
         {% endblock %}
     </div>
+
     <script>
         function toggleDropdown() {
             var dropdown = document.getElementById('userMenuDropdown');
             var isVisible = dropdown.style.display === 'block';
             dropdown.style.display = isVisible ? 'none' : 'block';
         }
-        function toggleNotifications() {
-            var dropdown = document.getElementById('notificationDropdown');
-            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+
+        // 세션 타임아웃 시간(밀리초)
+        const SESSION_TIMEOUT = 900 * 1000;  // 12분
+
+        let timeout;
+
+        // 활동 감지 및 타이머 리셋 함수
+        function resetTimer() {
+            clearTimeout(timeout);
+            timeout = setTimeout(logout, SESSION_TIMEOUT);
         }
+
+        // 자동 로그아웃 함수
+        function logout() {
+            window.location.href = "{% url 'logout' %}";
+        }
+
+        // 사용자 활동 이벤트 추가
+        window.onload = resetTimer;
+        document.onmousemove = resetTimer;
+        document.onkeypress = resetTimer;
+        document.onscroll = resetTimer;
+        document.onclick = resetTimer;
     </script>
 </body>
 </html>

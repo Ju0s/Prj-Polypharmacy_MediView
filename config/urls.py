@@ -19,6 +19,8 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from config.views import index
+from django.contrib.auth import views as auth_views
+from users.views import logout
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -28,6 +30,7 @@ urlpatterns = [
     path('medicine/',include('medicine.urls')),
     path('search/', include('search.urls')),
     path('faq/', include('faq.urls')),
+    path('users/logout/', logout, name='logout'),
     path('',index),
 ]
 urlpatterns += static(
