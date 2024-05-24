@@ -34,7 +34,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 1rem; /* Adjust padding for smaller screens */
+            padding: 0 1rem;
         }
         @media (max-width: 768px) {
             header {
@@ -42,11 +42,11 @@
                 align-items: flex-start;
             }
             .user-menu {
-                width: 100%; /* Full width for mobile devices */
-                justify-content: flex-end; /* Align menu items to the right */
+                width: 100%;
+                justify-content: flex-end;
             }
             #userMenuDropdown {
-                width: 100%; /* Dropdown takes full width on mobile */
+                width: 100%;
             }
         }
     </style>
@@ -63,9 +63,9 @@
             <a class="text-sm font-medium text-white hover:underline" href="#">복약상담계획서</a>
             <a class="text-sm font-medium text-white hover:underline" href="/posts/ask/">문의사항</a>
             <a class="text-sm font-medium text-white hover:underline" href="/faq/">FAQ</a>
-            
         </nav>
         <div class="user-menu">
+            <div id="logout-timer" class="text-white mr-4"></div> <!-- 타이머 표시 영역 -->
             <button id="userMenuButton" class="flex items-center space-x-2 bg-[#4f46e5] text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4f46e5]" aria-haspopup="true" onclick="toggleDropdown()">
                 <span>{{ user.username }}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="ml-2 h-4 w-4" viewBox="0 0 24 24">
@@ -80,12 +80,9 @@
     </header>
     
     <div class="flex-grow">
-        <!-- Placeholder for where individual page content will go -->
         {% block content %}
-
         {% endblock %}
     </div>
-
     <script>
         function toggleDropdown() {
             var dropdown = document.getElementById('userMenuDropdown');
@@ -93,28 +90,28 @@
             dropdown.style.display = isVisible ? 'none' : 'block';
         }
 
-        // 세션 타임아웃 시간(밀리초)
-        const SESSION_TIMEOUT = 900 * 1000;  // 12분
+        function startLogoutTimer() {
+            const logoutTime = 15 * 60 * 1000;  // 15 minutes in milliseconds
+            const logoutTimerElement = document.getElementById('logout-timer');
+            let remainingTime = logoutTime;
 
-        let timeout;
+            function updateTimer() {
+                const minutes = Math.floor(remainingTime / (60 * 1000));
+                const seconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
+                logoutTimerElement.textContent = `자동 로그아웃까지 남은 시간: ${minutes}분 ${seconds}초`;
+                if (remainingTime > 0) {
+                    remainingTime -= 1000;
+                } else {
+                    clearInterval(timerInterval);
+                    window.location.href = '/users/logout/';
+                }
+            }
 
-        // 활동 감지 및 타이머 리셋 함수
-        function resetTimer() {
-            clearTimeout(timeout);
-            timeout = setTimeout(logout, SESSION_TIMEOUT);
+            updateTimer();  // 초기 타이머 업데이트
+            const timerInterval = setInterval(updateTimer, 1000);  // 매초마다 타이머 업데이트
         }
 
-        // 자동 로그아웃 함수
-        function logout() {
-            window.location.href = "{% url 'logout' %}";
-        }
-
-        // 사용자 활동 이벤트 추가
-        window.onload = resetTimer;
-        document.onmousemove = resetTimer;
-        document.onkeypress = resetTimer;
-        document.onscroll = resetTimer;
-        document.onclick = resetTimer;
+        startLogoutTimer();  // 페이지가 로드될 때 타이머 시작
     </script>
 </body>
 </html>

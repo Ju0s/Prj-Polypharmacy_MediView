@@ -6,12 +6,12 @@
     <h1 class="text-2xl font-bold mb-4">제품 검색</h1>
     <form method="get" action="{% url 'search' %}" class="mb-8">
         <div class="flex items-center space-x-4">
-            <input type="text" name="q" placeholder="검색어를 입력해주세요" value="{{ query|default_if_none:'' }}" class="flex-grow rounded-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <select name="search_by" class="rounded-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <option value="제품명" {% if search_by == '제품명' %}selected{% endif %}>제품명</option>
                 <option value="주성분코드" {% if search_by == '주성분코드' %}selected{% endif %}>주성분코드</option>
                 <option value="업체명" {% if search_by == '업체명' %}selected{% endif %}>업체명</option>
             </select>
+            <input type="text" name="q" placeholder="검색어를 입력해주세요" value="{{ query|default_if_none:'' }}" class="flex-grow rounded-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <button type="submit" class="ml-4 px-4 py-2 bg-indigo-500 text-white rounded-full hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 검색
             </button>
@@ -28,8 +28,10 @@
                     <div>주성분코드: {{ 제품.주성분코드 }}</div>
                     <div>업체명: {{ 제품.업체코드.업체명|default:"업체 정보 없음" }}</div>
                 </div>
-                <button onclick="addProduct('{{ 제품.제품명 }}', '{{ 제품.제품코드 }}', '{{ 제품.주성분코드 }}', '{{ 제품.업체코드.업체명|default:"업체 정보 없음" }}')" class="ml-4 px-4 py-2 bg-green-500 text-white rounded-full hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
-                    추가
+                <button onclick="addProduct('{{ 제품.제품명 }}', '{{ 제품.제품코드 }}', '{{ 제품.주성분코드 }}', '{{ 제품.업체코드.업체명|default:"업체 정보 없음" }}')" class="ml-4 p-2 bg-green-500 text-white rounded-full hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
                 </button>
             </li>
         {% empty %}
@@ -53,9 +55,9 @@
     </table>
 
     <h2 class="text-xl font-semibold mt-8 mb-4">금기 정보</h2>
-    <div class="mb-4 space-y-2">
+    <div class="mb-4 grid grid-cols-5 gap-2">
         {% for 금기유형 in 금기유형_list %}
-            <button id="filter-{{ 금기유형 }}" class="bg-[#4f46e5] text-white px-4 py-2 rounded-full hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500" onclick="filterContraindications('{{ 금기유형 }}')">{{ 금기유형 }} (<span id="count-{{ 금기유형 }}">0</span>)</button>
+            <button id="filter-{{ 금기유형 }}" class="filter-button bg-[#4f46e5] text-white px-4 py-2 rounded-full hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500" onclick="filterContraindications('{{ 금기유형 }}')">{{ 금기유형 }} (<span id="count-{{ 금기유형 }}">0</span>)</button>
         {% endfor %}
     </div>
     <table id="contraindicationsTable" class="min-w-full bg-white rounded-lg shadow-md hidden">
@@ -81,9 +83,9 @@
         const selectedProducts = getSelectedProducts();
         const existingProduct = selectedProducts.find(product => product.code === code);
         if (!existingProduct) {
-            selectedProducts.push({ name, code, ingredientCode, company });
+            selectedProducts.unshift({ name, code, ingredientCode, company }); // Add new product to the beginning
             saveSelectedProducts(selectedProducts);
-            renderSelectedProducts();
+            renderSelectedProducts(); // Re-render the products
             fetchContraindications(code, name);
         } else {
             alert('이미 선택된 제품입니다.');
@@ -95,7 +97,7 @@
         const productCode = selectedProducts[index].code;
         selectedProducts.splice(index, 1);
         saveSelectedProducts(selectedProducts);
-        renderSelectedProducts();
+        renderSelectedProducts(); // Re-render the products
         removeContraindications(productCode);
     }
 
@@ -127,7 +129,7 @@
         table.innerHTML = '';
         const selectedProducts = getSelectedProducts();
         selectedProducts.forEach((product, index) => {
-            const newRow = table.insertRow();
+            const newRow = table.insertRow(); // Insert new row at the beginning
             const nameCell = newRow.insertCell(0);
             const codeCell = newRow.insertCell(1);
             const ingredientCodeCell = newRow.insertCell(2);
@@ -210,7 +212,7 @@
         const counts = {};
 
         rows.forEach(row => {
-            const type = row.cells[2].textContent;
+            const type = row.cells[2].textContent.trim();
             if (!counts[type]) {
                 counts[type] = 0;
             }
@@ -227,12 +229,21 @@
     function filterContraindications(type) {
         const rows = document.querySelectorAll('#contraindicationsTable tbody tr');
         rows.forEach(row => {
-            if (row.cells[2].textContent === type) {
+            if (type === '전체' || row.cells[2].textContent === type) {
                 row.style.display = '';
             } else {
                 row.style.display = 'none';
             }
         });
+
+        document.querySelectorAll('.filter-button').forEach(button => {
+            button.classList.remove('bg-indigo-600', 'text-white');
+            button.classList.add('bg-gray-200', 'text-gray-800');
+        });
+
+        const activeButton = document.getElementById(`filter-${type}`);
+        activeButton.classList.remove('bg-gray-200', 'text-gray-800');
+        activeButton.classList.add('bg-indigo-600', 'text-white');
     }
 </script>
 {% endblock %}

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'posts',
     'medicine',
     'faq',
+    'counseling',
     'crispy_forms',
     "django.contrib.admin",
     "django.contrib.auth",
@@ -161,5 +162,5 @@ LOGGING = {
     },
 }
 
-SESSION_COOKIE_AGE = 15  # 세션 만료 시간(초), 여기서는 30분으로 설정
+SESSION_COOKIE_AGE = 900  # 세션 만료 시간(초), 여기서는 15분으로 설정
 SESSION_SAVE_EVERY_REQUEST = True  # 모든 요청에 대해 세션 갱신
