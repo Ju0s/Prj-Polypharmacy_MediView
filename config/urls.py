@@ -31,6 +31,7 @@ urlpatterns = [
     path('search/', include('search.urls')),
     path('faq/', include('faq.urls')),
     path('users/logout/', logout, name='logout'),
+    path('yak/', include('yak.urls')),
     path('',index),
 ]
 urlpatterns += static(

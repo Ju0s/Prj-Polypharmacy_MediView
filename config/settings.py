@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'posts',
     'medicine',
     'faq',
-    'counseling',
+    'yak',
     'crispy_forms',
     "django.contrib.admin",
     "django.contrib.auth",
@@ -148,19 +148,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_URL = "/users/login/"
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG',
-    },
-}
 
 SESSION_COOKIE_AGE = 900  # 세션 만료 시간(초), 여기서는 15분으로 설정
 SESSION_SAVE_EVERY_REQUEST = True  # 모든 요청에 대해 세션 갱신
+
+DEBUG = True
