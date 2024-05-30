@@ -15,4 +15,5 @@ urlpatterns = [
     path('step9/<int:patient_id>/', views.step9, name='step9'),
     path('step10/<int:patient_id>/', views.step10, name='step10'),
     path('step11/<int:patient_id>/', views.step11, name='step11'),
+    path('download_pdf/<int:patient_id>/', views.download_pdf, name='download_pdf'),
 ]

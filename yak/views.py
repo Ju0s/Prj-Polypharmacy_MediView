@@ -3,6 +3,9 @@ from django.utils import timezone
 from .models import PatientInfo, ProviderInfo, PatientMedication
 from .forms import PatientInfoForm, ProviderInfoForm, MedicationForm, ProductSearchForm
 from medicine.models import *
+from django.template.loader import render_to_string
+import pdfkit
+from django.http import HttpResponse
 
 def step1(request):
     if request.method == 'POST':
@@ -310,4 +313,118 @@ def step10(request, patient_id):
 
 def step11(request, patient_id):
     patient = get_object_or_404(PatientInfo, id=patient_id)
-    return render(request, 'yak/step11.html', {'patient': patient})
+    medications = patient.medications.all()
+
+    return render(request, 'yak/step11.html', {
+        'patient': patient,
+        'medications': medications,
+    })
+
+def download_pdf(request, patient_id):
+    patient = get_object_or_404(PatientInfo, id=patient_id)
+    medications = patient.medications.all()
+    
+    # Step 2에서 선택된 약물의 품목기준코드 및 제품코드 리스트
+    product_codes = medications.values_list('product__제품코드', flat=True)
+    product_criteria_codes = medications.values_list('product__품목기준코드', flat=True)
+    
+    # 각 스텝의 내용을 수집
+    # Step 1 내용
+    provider_info = patient.provider
+
+    # Step 2 내용
+    usage_info_list = 품목_사용정보.objects.filter(품목기준코드__in=product_criteria_codes)
+
+    # Step 4 내용
+    contraindications_5_9 = 제품_금기정보.objects.filter(제품코드__in=product_codes, 금기코드__금기코드__in=[5, 9]).select_related('제품코드', '금기코드')
+    overlap_info = {}
+    contraindication_details = []
+    for contraindication in contraindications_5_9:
+        detail = {'제품명': contraindication.제품코드.제품명, '금기유형': contraindication.금기코드.금기유형}
+        if contraindication.금기코드.금기코드 == 5:
+            details = 병용금기상세정보.objects.filter(제품코드=contraindication.제품코드)
+            detail.update({'상세정보': [{'상대제품명': 제품.objects.get(제품코드=d.상대제품코드).제품명, '상세정보': d.상세정보} for d in details]})
+        elif contraindication.금기코드.금기코드 == 9:
+            overlaps = 효능군중복상세정보.objects.filter(제품코드=contraindication.제품코드)
+            detail.update({'상세정보': [{'효능군중복_효능군': o.효능군중복_효능군, '효능군중복_Group': o.효능군중복_Group} for o in overlaps]})
+        contraindication_details.append(detail)
+
+    # Step 5 내용
+    side_effects = 품목_사용정보.objects.filter(품목기준코드__in=product_criteria_codes)
+
+    # Step 6 내용
+    interactions = 품목_사용정보.objects.filter(품목기준코드__in=product_criteria_codes)
+
+    # Step 7 내용
+    usage_methods = 품목_사용정보.objects.filter(품목기준코드__in=product_criteria_codes)
+
+    # Step 8 내용
+    storage_methods = 품목_사용정보.objects.filter(품목기준코드__in=product_criteria_codes)
+
+    # Step 10 내용
+    warnings_1_3_4_6 = 제품_금기정보.objects.filter(제품코드__in=product_codes, 금기코드__금기코드__in=[1, 3, 4, 6]).select_related('제품코드', '금기코드')
+    warning_details = []
+    for warning in warnings_1_3_4_6:
+        detail = {'제품명': warning.제품코드.제품명, '금기유형': warning.금기코드.금기유형}
+        if warning.금기코드.금기코드 == 3:
+            try:
+                elderly_info = 노인주의상세정보.objects.get(제품코드=warning.제품코드)
+                detail.update({
+                    '노인주의_약품상세정보': elderly_info.노인주의_약품상세정보,
+                })
+            except 노인주의상세정보.DoesNotExist:
+                detail.update({
+                    '노인주의_약품상세정보': '정보 없음',
+                })
+        elif warning.금기코드.금기코드 == 4:
+            try:
+                pregnant_info = 임부금기상세정보.objects.get(제품코드=warning.제품코드)
+                detail.update({
+                    '임부금기_금기등급': pregnant_info.임부금기_금기등급,
+                    '임부금기_상세정보': pregnant_info.임부금기_상세정보,
+                })
+            except 임부금기상세정보.DoesNotExist:
+                detail.update({
+                    '임부금기_금기등급': '정보 없음',
+                    '임부금기_상세정보': '정보 없음',
+                })
+        elif warning.금기코드.금기코드 == 6:
+            try:
+                age_info = 연령별금기상세정보.objects.get(제품코드=warning.제품코드)
+                detail.update({
+                    '특정연령': age_info.특정연령,
+                    '특정연령단위': age_info.특정연령단위,
+                    '연령처리조건': age_info.연령처리조건,
+                    '상세정보': age_info.상세정보,
+                })
+            except 연령별금기상세정보.DoesNotExist:
+                detail.update({
+                    '특정연령': '정보 없음',
+                    '특정연령단위': '정보 없음',
+                    '연령처리조건': '정보 없음',
+                    '상세정보': '정보 없음',
+                })
+        warning_details.append(detail)
+
+    # PDF 생성
+    html_string = render_to_string('yak/report.html', {
+        'patient': patient,
+        'provider_info': provider_info,
+        'medications': medications,
+        'usage_info_list': usage_info_list,
+        'contraindications_5_9': contraindication_details,
+        'side_effects': side_effects,
+        'interactions': interactions,
+        'usage_methods': usage_methods,
+        'storage_methods': storage_methods,
+        'warning_details': warning_details,
+    })
+    
+    # wkhtmltopdf 실행 파일 경로 설정
+    path_to_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+    config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
+    pdf = pdfkit.from_string(html_string, False, configuration=config)
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="report_{patient.id}.pdf"'
+
+    return response
