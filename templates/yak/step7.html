@@ -1,67 +1,50 @@
 <!-- yak/templates/yak/step7.html -->
-
 {% extends 'mainbase.html' %}
+{% load custom_filters %}
 
 {% block content %}
 <main class="mt-20 p-4">
     <h1 class="text-2xl font-bold text-gray-900 dark:text-white">복용상담계획서 - Step 7</h1>
     <p class="mt-4 text-gray-600 dark:text-gray-300">의약품 복용법 확인</p>
     
-    <!-- 사용법 정보 테이블 -->
+    <!-- 사용법 정보 -->
     {% if usage_methods %}
-    <div class="mt-6">
-        <h2 class="text-lg font-bold text-gray-900 dark:text-white">사용법 정보</h2>
-        <table class="min-w-full divide-y divide-gray-200 mt-4">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">제품명</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">사용법</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                {% for method in usage_methods %}
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ method.제품명 }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ method.사용법 }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="mt-6 bg-white p-4 rounded-lg shadow">
+        <h2 class="text-lg font-bold text-gray-900">사용법 정보</h2>
+        {% for method in usage_methods %}
+        <p class="mt-2 text-gray-900"><strong>{{ method.제품명 }}</strong> 의 사용법은 다음과 같습니다.</p>
+        <div class="ml-4 text-gray-900 break-words">
+            {% for sentence in method.사용법|split_sentences %}
+                {% if sentence|strip_whitespace %}
+                    <p>{{ sentence|strip_whitespace }}</p>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endfor %}
     </div>
     {% else %}
     <p class="mt-4 text-gray-600 dark:text-gray-300">해당 사용법 정보를 찾을 수 없습니다.</p>
     {% endif %}
     
-    <!-- 금기 상세정보 테이블 -->
+    <!-- 금기 상세정보 -->
     {% if contraindication_details %}
-    <div class="mt-6">
-        <h2 class="text-lg font-bold text-gray-900 dark:text-white">금기 상세정보</h2>
-        <table class="min-w-full divide-y divide-gray-200 mt-4">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">제품명</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">금기유형</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상세정보</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                {% for detail in contraindication_details %}
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ detail.제품명 }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ detail.금기유형 }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {% if '투여기간' in detail.금기유형 %}
-                        최대투여기간일수: {{ detail.최대투여기간일수 }}, 주성분함량: {{ detail.주성분함량 }}
-                        {% elif '용량 주의' in detail.금기유형 %}
-                        일일최대투여량: {{ detail.일일최대투여량 }}, 일일최대투여기준량: {{ detail.일일최대투여기준량 }}, 용량주의 상세내용: {{ detail.용량주의_상세내용 }}
-                        {% else %}
-                        상세정보 없음
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="mt-6 bg-white p-4 rounded-lg shadow">
+        <h2 class="text-lg font-bold text-gray-900">금기 상세정보</h2>
+        {% for detail in contraindication_details %}
+        <p class="mt-2 text-gray-900"><strong>{{ detail.제품명 }}</strong> 의 금기 상세정보는 다음과 같습니다.</p>
+        <p class="ml-4 text-gray-900 break-words">{{ detail.금기유형 }}</p>
+        <p class="ml-8 text-gray-900 break-words">
+            {% if '투여기간' in detail.금기유형 %}
+            최대투여기간일수: <strong>{{ detail.최대투여기간일수 }}</strong>, 주성분함량: <strong>{{ detail.주성분함량 }}</strong>
+            {% elif '용량 주의' in detail.금기유형 %}
+            일일최대투여량: {{ detail.일일최대투여량 }}<br>
+            일일최대투여기준량: {{ detail.일일최대투여기준량 }}<br>
+            용량주의 상세내용: {{ detail.용량주의_상세내용 }}
+            {% else %}
+            상세정보 없음
+            {% endif %}
+        </p>
+        {% endfor %}
     </div>
     {% else %}
     <p class="mt-4 text-gray-600 dark:text-gray-300">해당 금기 상세정보를 찾을 수 없습니다.</p>

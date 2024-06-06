@@ -6,6 +6,8 @@ from medicine.models import *
 from django.template.loader import render_to_string
 import pdfkit
 from django.http import HttpResponse
+from django.conf import settings
+
 
 def step1(request):
     if request.method == 'POST':
@@ -120,11 +122,12 @@ def step5(request, patient_id):
     # 부작용 정보 처리
     side_effects = []
     for usage_info in usage_info_list:
-        product = 제품.objects.get(품목기준코드=usage_info.품목기준코드)
-        side_effects.append({
-            '제품명': product.제품명,
-            '부작용': usage_info.부작용 if usage_info.부작용 else '부작용 상세사항없음'
-        })
+        products = 제품.objects.filter(품목기준코드=usage_info.품목기준코드)
+        for product in products:
+            side_effects.append({
+                '제품명': product.제품명,
+                '부작용': usage_info.부작용 if usage_info.부작용 else '부작용 상세사항없음'
+            })
 
     return render(request, 'yak/step5.html', {
         'patient': patient,
@@ -144,11 +147,12 @@ def step6(request, patient_id):
     # 상호작용 정보 처리
     interactions = []
     for usage_info in usage_info_list:
-        product = 제품.objects.get(품목기준코드=usage_info.품목기준코드)
-        interactions.append({
-            '제품명': product.제품명,
-            '상호작용': usage_info.상호작용 if usage_info.상호작용 else '상호작용 상세사항없음'
-        })
+        products = 제품.objects.filter(품목기준코드=usage_info.품목기준코드)
+        for product in products:
+            interactions.append({
+                '제품명': product.제품명,
+                '상호작용': usage_info.상호작용 if usage_info.상호작용 else '상호작용 상세사항없음'
+            })
 
     return render(request, 'yak/step6.html', {
         'patient': patient,
@@ -169,11 +173,12 @@ def step7(request, patient_id):
     # 사용법 정보 처리
     usage_methods = []
     for usage_info in usage_info_list:
-        product = 제품.objects.get(품목기준코드=usage_info.품목기준코드)
-        usage_methods.append({
-            '제품명': product.제품명,
-            '사용법': usage_info.사용법 if usage_info.사용법 else '사용법 상세사항없음'
-        })
+        products = 제품.objects.filter(품목기준코드=usage_info.품목기준코드)
+        for product in products:
+            usage_methods.append({
+                '제품명': product.제품명,
+                '사용법': usage_info.사용법 if usage_info.사용법 else '사용법 상세사항없음'
+            })
 
     # 제품코드를 사용하여 금기코드가 2, 7, 8인 제품_금기정보 가져오기
     contraindications = 제품_금기정보.objects.filter(제품코드__in=product_codes_list, 금기코드__금기코드__in=[2, 7, 8]).select_related('제품코드', '금기코드')
@@ -233,11 +238,12 @@ def step8(request, patient_id):
     # 보관법 정보 처리
     storage_methods = []
     for usage_info in usage_info_list:
-        product = 제품.objects.get(품목기준코드=usage_info.품목기준코드)
-        storage_methods.append({
-            '제품명': product.제품명,
-            '보관법': usage_info.보관법 if usage_info.보관법 else '보관법 상세사항없음'
-        })
+        products = 제품.objects.filter(품목기준코드=usage_info.품목기준코드)
+        for product in products:
+            storage_methods.append({
+                '제품명': product.제품명,
+                '보관법': usage_info.보관법 if usage_info.보관법 else '보관법 상세사항없음'
+            })
 
     return render(request, 'yak/step8.html', {
         'patient': patient,
@@ -421,8 +427,7 @@ def download_pdf(request, patient_id):
     })
     
     # wkhtmltopdf 실행 파일 경로 설정
-    path_to_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
-    config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
+    config = pdfkit.configuration(wkhtmltopdf=settings.PDFKIT_CONFIG['wkhtmltopdf'])
     pdf = pdfkit.from_string(html_string, False, configuration=config)
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="report_{patient.id}.pdf"'
