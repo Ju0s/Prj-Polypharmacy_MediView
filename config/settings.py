@@ -153,3 +153,7 @@ SESSION_COOKIE_AGE = 900  # 세션 만료 시간(초), 여기서는 15분으로 
 SESSION_SAVE_EVERY_REQUEST = True  # 모든 요청에 대해 세션 갱신
 
 DEBUG = True
+
+PDFKIT_CONFIG = {
+    'wkhtmltopdf': r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+}

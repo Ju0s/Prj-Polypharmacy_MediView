@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from .models import PatientInfo, ProviderInfo, PatientMedication
@@ -8,24 +9,30 @@ import pdfkit
 from django.http import HttpResponse
 from django.conf import settings
 
-
+@login_required
 def step1(request):
     if request.method == 'POST':
         patient_form = PatientInfoForm(request.POST)
-        provider_form = ProviderInfoForm(request.POST)
+        provider_form = ProviderInfoForm(request.POST, prefix="provider")
         if patient_form.is_valid() and provider_form.is_valid():
             provider_info = provider_form.save(commit=False)
             provider_info.user = request.user
             provider_info.created_at = timezone.now()
+            print(f"Provider Info before save: {provider_info.name}, {provider_info.organization}")
             provider_info.save()
+            print(f"Provider Info after save: {provider_info.name}, {provider_info.organization}")
+
             patient_info = patient_form.save(commit=False)
             patient_info.is_elderly = patient_info.age >= 65  # 노인 여부 설정
             patient_info.provider = provider_info  # provider 설정
+            print(f"Patient Info before save: {patient_info.name}, {patient_info.age}, {patient_info.gender}")
             patient_info.save()
+            print(f"Patient Info after save: {patient_info.name}, {patient_info.age}, {patient_info.gender}")
+
             return redirect('step2', patient_id=patient_info.id)  # patient_id 포함
     else:
         patient_form = PatientInfoForm()
-        provider_form = ProviderInfoForm()
+        provider_form = ProviderInfoForm(prefix="provider")
     return render(request, 'yak/step1.html', {'patient_form': patient_form, 'provider_form': provider_form})
 
 def step2(request, patient_id):
@@ -52,6 +59,9 @@ def step2(request, patient_id):
                 frequency=frequency
             )
             return redirect('step2', patient_id=patient.id)
+
+    print(f"Medications: {medications}")
+    print(f"Search Results: {search_results}")
 
     return render(request, 'yak/step2.html', {
         'search_form': search_form,
@@ -329,21 +339,22 @@ def step11(request, patient_id):
 def download_pdf(request, patient_id):
     patient = get_object_or_404(PatientInfo, id=patient_id)
     medications = patient.medications.all()
+    provider_info = patient.provider
+    print(f"Provider Info in PDF before rendering: {provider_info.name}, {provider_info.organization}")
+    print(f"Patient Info in PDF before rendering: {patient.name}, {patient.age}, {patient.gender}")
     
     # Step 2에서 선택된 약물의 품목기준코드 및 제품코드 리스트
     product_codes = medications.values_list('product__제품코드', flat=True)
     product_criteria_codes = medications.values_list('product__품목기준코드', flat=True)
     
     # 각 스텝의 내용을 수집
-    # Step 1 내용
     provider_info = patient.provider
 
     # Step 2 내용
-    usage_info_list = 품목_사용정보.objects.filter(품목기준코드__in=product_criteria_codes)
+    usage_info_list = 품목_사용정보.objects.filter(품목기준코드__in=medications.values_list('product__품목기준코드', flat=True))
 
     # Step 4 내용
-    contraindications_5_9 = 제품_금기정보.objects.filter(제품코드__in=product_codes, 금기코드__금기코드__in=[5, 9]).select_related('제품코드', '금기코드')
-    overlap_info = {}
+    contraindications_5_9 = 제품_금기정보.objects.filter(제품코드__in=medications.values_list('product__제품코드', flat=True), 금기코드__금기코드__in=[5, 9]).select_related('제품코드', '금기코드')
     contraindication_details = []
     for contraindication in contraindications_5_9:
         detail = {'제품명': contraindication.제품코드.제품명, '금기유형': contraindication.금기코드.금기유형}
@@ -356,21 +367,49 @@ def download_pdf(request, patient_id):
         contraindication_details.append(detail)
 
     # Step 5 내용
-    side_effects = 품목_사용정보.objects.filter(품목기준코드__in=product_criteria_codes)
+    side_effects = []
+    for medication in medications:
+        usage_info_list = 품목_사용정보.objects.filter(품목기준코드=medication.product.품목기준코드)
+        for usage_info in usage_info_list:
+            side_effects.append({
+                '제품명': medication.product.제품명,
+                '부작용': usage_info.부작용 if usage_info.부작용 else '부작용 상세사항없음'
+            })
 
     # Step 6 내용
-    interactions = 품목_사용정보.objects.filter(품목기준코드__in=product_criteria_codes)
+    interactions = []
+    for medication in medications:
+        usage_info_list = 품목_사용정보.objects.filter(품목기준코드=medication.product.품목기준코드)
+        for usage_info in usage_info_list:
+            interactions.append({
+                '제품명': medication.product.제품명,
+                '상호작용': usage_info.상호작용 if usage_info.상호작용 else '상호작용 상세사항없음'
+            })
 
     # Step 7 내용
-    usage_methods = 품목_사용정보.objects.filter(품목기준코드__in=product_criteria_codes)
+    usage_methods = []
+    for medication in medications:
+        usage_info_list = 품목_사용정보.objects.filter(품목기준코드=medication.product.품목기준코드)
+        for usage_info in usage_info_list:
+            usage_methods.append({
+                '제품명': medication.product.제품명,
+                '사용법': usage_info.사용법 if usage_info.사용법 else '사용법 상세사항없음'
+            })
 
     # Step 8 내용
-    storage_methods = 품목_사용정보.objects.filter(품목기준코드__in=product_criteria_codes)
+    storage_methods = []
+    for medication in medications:
+        usage_info_list = 품목_사용정보.objects.filter(품목기준코드=medication.product.품목기준코드)
+        for usage_info in usage_info_list:
+            storage_methods.append({
+                '제품명': medication.product.제품명,
+                '보관법': usage_info.보관법 if usage_info.보관법 else '보관법 상세사항없음'
+            })
 
     # Step 10 내용
-    warnings_1_3_4_6 = 제품_금기정보.objects.filter(제품코드__in=product_codes, 금기코드__금기코드__in=[1, 3, 4, 6]).select_related('제품코드', '금기코드')
+    warnings = 제품_금기정보.objects.filter(제품코드__in=medications.values_list('product__제품코드', flat=True), 금기코드__금기코드__in=[1, 3, 4, 6]).select_related('제품코드', '금기코드')
     warning_details = []
-    for warning in warnings_1_3_4_6:
+    for warning in warnings:
         detail = {'제품명': warning.제품코드.제품명, '금기유형': warning.금기코드.금기유형}
         if warning.금기코드.금기코드 == 3:
             try:
@@ -412,21 +451,21 @@ def download_pdf(request, patient_id):
                 })
         warning_details.append(detail)
 
-    # PDF 생성
     html_string = render_to_string('yak/report.html', {
         'patient': patient,
         'provider_info': provider_info,
         'medications': medications,
-        'usage_info_list': usage_info_list,
         'contraindications_5_9': contraindication_details,
         'side_effects': side_effects,
         'interactions': interactions,
         'usage_methods': usage_methods,
         'storage_methods': storage_methods,
         'warning_details': warning_details,
+        'patient_name': patient.name,
+        'provider_name': provider_info.name,
+        'provider_affiliation': provider_info.organization,
     })
     
-    # wkhtmltopdf 실행 파일 경로 설정
     config = pdfkit.configuration(wkhtmltopdf=settings.PDFKIT_CONFIG['wkhtmltopdf'])
     pdf = pdfkit.from_string(html_string, False, configuration=config)
     response = HttpResponse(pdf, content_type='application/pdf')

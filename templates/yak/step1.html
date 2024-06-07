@@ -1,4 +1,4 @@
-<!-- yak/templates/yak/step1.html -->
+<!-- templates/yak/step1.html -->
 
 {% extends 'mainbase.html' %}
 
@@ -41,24 +41,24 @@
             </div>
             <div class="space-y-2">
                 <label for="id_disease" class="block text-sm font-medium text-gray-700 dark:text-gray-300">질환</label>
-                <textarea name="disease" id="id_disease" rows="3" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                <textarea name="disease" id="id_disease" rows="3" placeholder="알레르기와 같은 질환을 기재해주세요" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
             </div>
             <div class="space-y-2">
                 <label for="id_other_health_info" class="block text-sm font-medium text-gray-700 dark:text-gray-300">기타 건강 정보</label>
-                <textarea name="other_health_info" id="id_other_health_info" rows="3" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                <textarea name="other_health_info" id="id_other_health_info" rows="3" placeholder="환자의 건강행태(흡연, 음주, 운동)나 기타 건강 정보를 기재해주세요" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
             </div>
         </fieldset>
         <fieldset class="space-y-4">
             <legend class="text-lg font-semibold text-gray-900 dark:text-white">의료 제공자 정보</legend>
             <div class="space-y-2">
-                <label for="id_provider_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">이름</label>
-                <input type="text" name="provider_name" id="id_provider_name" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <label for="id_provider-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">이름</label>
+                <input type="text" name="provider-name" id="id_provider-name" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
             <div class="space-y-2">
-                <label for="id_organization" class="block text-sm font-medium text-gray-700 dark:text-gray-300">소속</label>
-                <input type="text" name="organization" id="id_organization" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <label for="id_provider-organization" class="block text-sm font-medium text-gray-700 dark:text-gray-300">소속</label>
+                <input type="text" name="provider-organization" id="id_provider-organization" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
-        </fieldset>
+        </fieldset>        
         <div class="mt-6">
             <button type="submit" class="bg-[#4f46e5] text-white px-4 py-2 rounded-full hover:bg-[#3730a3]">다음</button>
         </div>
