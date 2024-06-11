@@ -141,7 +141,6 @@ python manage.py runserver
 - 정상적으로 서버가 실행된 경우 다음과 같은 화면이 보입니다.
 
 ![로그인X 메인페이지](https://github.com/ghkstod/mediview/assets/134246762/74ccc0f6-cd43-4b3a-a072-8982c6419775)
-(https://github.com/ghkstod/mediview/blob/main/MediView%20%EB%AC%B8%EC%84%9C/%EC%95%BD%EB%81%BC%EB%A6%AC%20%ED%99%94%EB%A9%B4%EC%BA%A1%EC%B2%98/%EB%A1%9C%EA%B7%B8%EC%9D%B8X%20%EB%A9%94%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80.jpg)
 
 <h1 align="left">
   활용 데이터
