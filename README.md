@@ -79,15 +79,24 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-- MYSQL 사용시, `mediview/.env` 파일을 생성하여 로컬 서버와 데이터베이스를 설정합니다.
+- MYSQL 사용시, `mediview/.env` 파일을 생성하여 로컬 서버와 데이터베이스를 설정합니다. 또는 AWS,GCP 사용시 vi ~/.bashrc를 열어 수정합니다.
 
 ```bash
+#로컬에서 구축 시
 # mediview/.env
 # .env
 DB_DATABASE = "your_mysql_schemaname"
 DB_USER = "your_mysql_username"
 DB_PASSWORD = "your_mysql_password"
 DB_HOST = "127.0.0.1"
+
+#AWS 혹은 GCP에서 구축 시
+# vi ~/.bashrc
+export DB_DATABASE="your_mysql_schemaname"
+export DB_USER="your_mysql_username"
+export DB_PASSWORD="your_mysql_password"
+export DB_HOST="your_db_ip"
+export IP="your_ip"
 ```
 
 - SQLite 사용시, `mediview/config/settings.py`의 DATABASES를 수정합니다. AWS, GCP등 사용시 권장
