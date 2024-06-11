@@ -90,7 +90,7 @@ DB_PASSWORD = "your_mysql_password"
 DB_HOST = "127.0.0.1"
 ```
 
-- SQLite 사용시, `mediview/config/settings.py`의 DATABASES를 수정합니다.
+- SQLite 사용시, `mediview/config/settings.py`의 DATABASES를 수정합니다. AWS, GCP등 사용시 권장
 
 ```bash
 # mediview/config/settings.py
