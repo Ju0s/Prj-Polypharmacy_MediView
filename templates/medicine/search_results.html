@@ -54,7 +54,7 @@
         </tbody>
     </table>
 
-    <h2 class="text-xl font-semibold mt-8 mb-4">금기 정보</h2>
+    <h2 class="text-xl font-semibold mt-8 mb-4">주의사항</h2>
     <div class="mb-4 grid grid-cols-5 gap-2">
         {% for 금기유형 in 금기유형_list %}
             <button id="filter-{{ 금기유형 }}" class="filter-button bg-[#4f46e5] text-white px-4 py-2 rounded-full hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500" onclick="filterContraindications('{{ 금기유형 }}')">{{ 금기유형 }} (<span id="count-{{ 금기유형 }}">0</span>)</button>
