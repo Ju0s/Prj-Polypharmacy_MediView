@@ -9,3 +9,4 @@ pillow
 django-crispy-forms
 python-dotenv
 WeasyPrint
+pdfkit
