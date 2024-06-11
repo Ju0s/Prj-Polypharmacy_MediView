@@ -54,7 +54,7 @@
 git clone <https://github.com/ghkstod/mediview.git>
 ```
 
-- https://github.com/ghkstod/mediview.git 폴더 yakkiri 경로에서 가상환경을 설치합니다.
+- https://github.com/ghkstod/mediview.git 폴더 mediview 경로에서 가상환경을 설치합니다.
 
 ```bash
 pip install virtualenv #기존에 설치한 가상환경이 있다면 생략 가능
