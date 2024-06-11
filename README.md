@@ -142,6 +142,23 @@ python manage.py runserver
 
 ![로그인X 메인페이지](https://github.com/ghkstod/mediview/assets/134246762/74ccc0f6-cd43-4b3a-a072-8982c6419775)
 
+## PDF 기능 테스트 방법
+- https://wkhtmltopdf.org/downloads.html
+- 위 경로에서 필요한 파일 다운로드
+
+- 본인 환경에 맞게 mediview/config/settings.py 수정
+```bash
+# mediview/config/settings.py
+# 기존코드
+PDFKIT_CONFIG = {
+    'wkhtmltopdf': r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+}
+# 수정코드
+PDFKIT_CONFIG = {
+    'wkhtmltopdf': 'your_whkhtmltopdf.exe_path'
+}
+```
+
 <h1 align="left">
   활용 데이터
 </h1>
