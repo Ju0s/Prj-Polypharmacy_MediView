@@ -213,7 +213,7 @@ PDFKIT_CONFIG = {
 </h1>
  
 - 발표 자료는 해당 링크를 통해 확인 가능합니다:<br>
-[한국어 PDF](pdf)
+[한국어 PDF](https://github.com/ghkstod/mediview/blob/main/MediView%20%EB%AC%B8%EC%84%9C/%5B%EB%8D%B0%EC%97%9434%5D%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EB%B0%9C%ED%91%9C%EC%9E%90%EB%A3%8C_1%EC%A1%B0_%EB%A9%94%EB%94%94%EB%B7%B0%ED%8C%80.pdf)
 
 
 
